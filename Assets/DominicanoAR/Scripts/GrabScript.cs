@@ -123,6 +123,7 @@ public class GrabScript : MonoBehaviour
             foundItem.transform.position = currentPOIWorldPosition;
             foundItem.transform.rotation = Camera.main.transform.rotation;
             foundItem.transform.Rotate(0f, 180f, 0f);
+            
         }
         // Release the "Ficha"
         else if (foundItem && currentDetectedContinuousGesture == ManoGestureContinuous.OPEN_PINCH_GESTURE)

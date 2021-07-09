@@ -14,7 +14,7 @@ public class PlayerLogic : MonoBehaviour
     private PlaySlotsController northController;
     private PlaySlotsController enterController;
     private PlaySlotsController southController;
-    private PlayFichaScript playSLots;
+    private PlayFichaScript playSlots;
     private FichaScript foundFicha;
     public bool AIPlayer;
 
@@ -75,8 +75,8 @@ public class PlayerLogic : MonoBehaviour
 
     private void checkFichas()
     {
-        playSLots = FindObjectOfType<PlayFichaScript>();
-        int[] values = playSLots.playValues;
+        playSlots = FindObjectOfType<PlayFichaScript>();
+        int[] values = playSlots.playValues;
         FichaScript[] myFichas = fichas.ToArray();
 
         foreach (FichaScript ficha in myFichas)
@@ -109,4 +109,19 @@ public class PlayerLogic : MonoBehaviour
         }
         
     }
+
+    public List<FichaScript> fichasLeft(){
+
+        List<FichaScript> tempFichas = new List<FichaScript>();
+        foreach (FichaScript ficha in fichas)
+        {
+            if (ficha.played)
+                continue;
+
+            tempFichas.Add(ficha);
+        }
+
+        return tempFichas;
+    }
+
 }

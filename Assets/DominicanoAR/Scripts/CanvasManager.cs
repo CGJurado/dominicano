@@ -7,6 +7,10 @@ public class CanvasManager : MonoBehaviour
 {
     private GameObject messagePanel;
     public Text textMessage;
+    public Text playText;
+    public Text team1Score;
+    public Text team2Score;
+    public GameObject passBtn;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,5 +28,10 @@ public class CanvasManager : MonoBehaviour
     public void CloseMessagePanel()
     {
         messagePanel.SetActive(false);
+    }
+
+    public void togglePassBtn(bool value)
+    {
+        passBtn.SetActive(value);
     }
 }

@@ -16,6 +16,8 @@ public class GameLogic : MonoBehaviour
     private SlotsController[] P3Slots;
     private SlotsController[] P4Slots;
     private PlayerLogic[] players;
+    private int team1Points;
+    private int team2Points;
     private int playerTurn = 0;
     public PlayFichaScript playSlots;
     public bool start;
@@ -23,6 +25,8 @@ public class GameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        team1Points = 0;
+        team2Points = 0;
         canvas = FindObjectOfType<CanvasManager>();
         fichas = fichasObject.GetComponentsInChildren<FichaScript>();
         P1Slots = P1Object.GetComponentsInChildren<SlotsController>();
@@ -37,18 +41,30 @@ public class GameLogic : MonoBehaviour
     {
         if (start)
         {
-            if(players[playerTurn].myTurn == false)
+            if(playing().myTurn == false)
             {
-                playerTurn++;
-                if (playerTurn > 3)
-                    playerTurn = 0;
+                if(checkGameEnded())
+                {
+                    endGame();
+                }
+                else
+                {
+                    playerTurn++;
+                    if (playerTurn > 3)
+                        playerTurn = 0;
 
-                players[playerTurn].myTurn = true;
+                    players[playerTurn].myTurn = true;
 
-                canvas.OpenMessagePanel("Player " + (playerTurn + 1) + " turn");
+                    canvas.OpenMessagePanel("Player " + (playerTurn + 1) + " turn");
 
-                if (players[playerTurn].AIPlayer)
-                    StartCoroutine(ExecuteAfterTime(1f));
+                    canvas.togglePassBtn(true);
+                    if (players[playerTurn].AIPlayer)
+                    {
+                        canvas.togglePassBtn(false);
+                        StartCoroutine(ExecuteAfterTime(1f));
+                    }
+                }
+                
             }
         }
     }
@@ -60,11 +76,122 @@ public class GameLogic : MonoBehaviour
         playerTurn = 0;
         players[playerTurn].myTurn = true;
         start = true;
+        canvas.togglePassBtn(true);
+    }
+
+    public void endGame()
+    {
+        this.start = false;
+        canvas.OpenMessagePanel("Game Ended!");
+    }
+
+    private void addPointsToTeam(ref int winnerTeamPoints)
+    {
+        int points = 0;
+
+        List<FichaScript> fichasLeft = getFichasLeft();
+        foreach (FichaScript ficha in fichasLeft)
+        {
+            points += ficha.values[0];
+            points += ficha.values[1];
+        }
+
+        winnerTeamPoints += points;
+        canvas.team1Score.text = team1Points.ToString();
+        canvas.team1Score.text = team2Points.ToString();
+
+    }
+
+    public void passTurn(){
+        playing().myTurn = false;
     }
 
     public PlayerLogic playing()
     {
         return players[playerTurn];
+    }
+
+    private bool checkGameEnded()
+    {
+        ref int points = ref team2Points;
+        if(playing().number == 1 || playing().number == 3)
+            points = ref team1Points;
+
+        if(checkGameBlockade())
+        {
+            List<FichaScript> blockerFichas = playing().fichasLeft();
+            List<FichaScript> blockedFichas = players[playerTurn+1].fichasLeft();
+
+            int blockerCounter = 0;
+            int blockedCounter = 0;
+
+            foreach (FichaScript ficha in blockerFichas)
+            {
+                blockerCounter += ficha.values[0];
+                blockerCounter += ficha.values[1];
+            }
+            foreach (FichaScript ficha in blockedFichas)
+            {
+                blockedCounter += ficha.values[0];
+                blockedCounter += ficha.values[1];
+            }
+
+            if(blockerCounter >= blockedCounter)
+                addPointsToTeam(ref team1Points);
+            else
+                addPointsToTeam(ref team2Points);
+
+            return true;
+        }
+        else if(!checkPlayerHasFichas()){
+
+            addPointsToTeam(ref points);
+            return true;
+        }
+        return false;
+    }
+
+    private bool checkPlayerHasFichas()
+    {
+
+        if(playing().fichasLeft().ToArray().Length > 0)
+            return true;
+
+        return false;
+    }
+
+    private List<FichaScript> getFichasLeft()
+    {
+        List<FichaScript> fichasLeft = new List<FichaScript>();
+        foreach (FichaScript ficha in fichas)
+        {
+            if (ficha.played)
+                continue;
+
+            fichasLeft.Add(ficha);
+        }
+        return fichasLeft;
+    }
+    private bool checkGameBlockade()
+    {
+        List<FichaScript> fichasLeft = getFichasLeft();
+        
+        foreach (FichaScript ficha in fichasLeft)
+        {
+            int[] northRes = ficha.CompareFichaValues(playSlots.playValues[1]);
+            if (northRes[0] == 1 || northRes[1] == 1)
+            {
+                return false;
+            }
+            
+            int[] southRes = ficha.CompareFichaValues(playSlots.playValues[0]);
+            if (southRes[0] == 1 || southRes[1] == 1)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private IEnumerator ExecuteAfterTime(float time)

@@ -113,6 +113,7 @@
      <Compile Include="Assets\DominicanoAR\Scripts\SlotsController.cs" />
      <Compile Include="Assets\Manomotion\Scripts\MainMenu\PrivacyPolicyDisclaimair.cs" />
      <Compile Include="Assets\Manomotion\Scripts\Data Structure\ManomotionBase.cs" />
+     <Compile Include="Assets\Manomotion\ApplicationIntro\Scripts\InstructionManoVisualization.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
      <Compile Include="Assets\DominicanoAR\Scripts\PlacementIndicator.cs" />
      <Compile Include="Assets\Manomotion\Scripts\Gizmos\GizmoManager.cs" />
@@ -128,6 +129,7 @@
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
+     <Compile Include="Assets\Manomotion\ApplicationIntro\Instructions\InstructionVisualization.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
      <Compile Include="Assets\DominicanoAR\Scripts\StatusScript.cs" />
@@ -136,8 +138,6 @@
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
      <Compile Include="Assets\Manomotion\Scripts\MainMenu\UIIconBehavior.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
-     <Compile Include="Assets\Manomotion\ApplicationIntro\Instructions\InstructionVisualization.cs" />
-     <Compile Include="Assets\Manomotion\ApplicationIntro\Scripts\InstructionManoVisualization.cs" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
