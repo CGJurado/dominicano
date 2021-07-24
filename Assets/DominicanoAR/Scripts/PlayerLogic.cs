@@ -11,12 +11,13 @@ public class PlayerLogic : MonoBehaviour
     public GameObject southAISlot;
     public bool myTurn = false;
     public bool done = false;
-    private PlaySlotsController northController;
-    private PlaySlotsController enterController;
-    private PlaySlotsController southController;
+    public PlaySlotsController northController;
+    public PlaySlotsController enterController;
+    public PlaySlotsController southController;
     private PlayFichaScript playSlots;
     private FichaScript foundFicha;
     public bool AIPlayer;
+    private bool fichaGotClicked = false;
 
 
     private void Update()
@@ -34,9 +35,82 @@ public class PlayerLogic : MonoBehaviour
             {
                 myTurn = false;
                 done = false;
+                fichaGotClicked = false;
                 foundFicha = null;
+                northController.unRender();
+                enterController.unRender();
+                southController.unRender();
+                northController.gotClicked = false;
+                southController.gotClicked = false;
+                enterController.gotClicked = false;
+            }
+
+            if(Input.GetMouseButtonDown(0))
+            {
+                Camera[] allCameras = new Camera[2];
+                Camera.GetAllCameras(allCameras);
+                if(allCameras[1])
+                {
+                    Ray ray = allCameras[1].ScreenPointToRay(Input.mousePosition);
+                    clickPlay(ray);
+                }
+
+            }
+            
+            // TODO: switch camera to player can select where to play from above
+            // if(Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+            // {
+            //     Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+            //     clickPlay(ray);
+            // }
+
+            if(fichaGotClicked)
+            {
+                if(northController.gotClicked){
+                    foundFicha.MoveTo(northAISlot);
+                    fichaGotClicked = false;
+                    northController.gotClicked = false;
+                }
+                else if(southController.gotClicked)
+                {
+                    foundFicha.MoveTo(southAISlot);
+                    fichaGotClicked = false;
+                    southController.gotClicked = false;
+                }
+                else if(enterController.gotClicked)
+                {
+                    foundFicha.MoveTo(southAISlot);
+                    fichaGotClicked = false;
+                    enterController.gotClicked = false;
+                }
+
+                this.Play();
             }
                 
+        }
+    }
+
+    private void clickPlay(Ray ray){
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100.0f))
+        {
+            if (hit.transform != null && hit.collider.gameObject.tag == "Ficha")
+            {
+                foundFicha = hit.transform.gameObject.GetComponent<FichaScript>();
+                if(foundFicha.canBePlayed()){
+
+                    fichaGotClicked = true;
+                    northController.render();
+                    enterController.render();
+                    southController.render();
+
+                    Handheld.Vibrate();
+                }
+                else{
+                    foundFicha = null;
+                }
+
+            }
         }
     }
 
@@ -47,8 +121,8 @@ public class PlayerLogic : MonoBehaviour
 
     public void removeFichas()
     {
-        fichas = new List<FichaScript>();
         myTurn = false;
+        fichas = new List<FichaScript>();
     }
 
 
@@ -58,19 +132,17 @@ public class PlayerLogic : MonoBehaviour
         {
             checkFichas();
         }
-        else
+        else if (foundFicha.doneAnimation && foundFicha.played)
         {
-            if (foundFicha.doneAnimation)
-            {
-                FindObjectOfType<CanvasManager>().OpenMessagePanel("P" + number + " PlayF: " + foundFicha.values[0] + " : " + foundFicha.values[1]);
-                if (foundFicha.transform.position == northAISlot.transform.position || foundFicha.transform.position == southAISlot.transform.position)
-                    foundFicha.CheckSlot();
-                else if (foundFicha.played)
-                    done = true;
+            
+            // if (foundFicha.transform.position == northAISlot.transform.position || foundFicha.transform.position == southAISlot.transform.position)
+            //     foundFicha.CheckSlot();
+            // else if (foundFicha.played)
+                done = true;
 
 
-            }
         }
+        // FindObjectOfType<CanvasManager>().OpenMessagePanel("P" + number + " PlayF: " + foundFicha.values[0] + " : " + foundFicha.values[1]);
     }
 
     private void checkFichas()
@@ -123,5 +195,6 @@ public class PlayerLogic : MonoBehaviour
 
         return tempFichas;
     }
+
 
 }

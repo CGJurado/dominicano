@@ -22,7 +22,6 @@ public class DetectTriggerCollision : MonoBehaviour
         // trigCol.gameObject.GetComponent<Renderer>().material.color = Color.green;
 
         gameObject.GetComponent<Renderer>().material.color = Color.cyan;
-        canvas.OpenMessagePanel("we did it bitch");
 
     }
 

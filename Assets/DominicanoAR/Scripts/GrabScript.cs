@@ -91,7 +91,7 @@ public class GrabScript : MonoBehaviour
         if (currentDetectedTriggerGesture == ManoGestureTrigger.PICK)
         {
             currentPOIPosition = Camera.main.ViewportToScreenPoint(trackingInfo.poi);
-            //shoot a raycast from the center of the screen
+            //shoot a raycast from the grabGesture position on the screen
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(currentPOIPosition);
 
@@ -128,8 +128,11 @@ public class GrabScript : MonoBehaviour
         // Release the "Ficha"
         else if (foundItem && currentDetectedContinuousGesture == ManoGestureContinuous.OPEN_PINCH_GESTURE)
         {
+            GameObject tempObj = new GameObject("temp");
+            tempObj.transform.position = currentPOIWorldPosition;
             //Check if 'Ficha' ended up inside an available Slot
-            foundItem.GetComponent<FichaScript>().CheckSlot();
+            // foundItem.GetComponent<FichaScript>().CheckSlot();
+            foundItem.GetComponent<FichaScript>().MoveTo(tempObj);
             foundItem = null;
         }
         // ######################################## Find the Table ##############################################

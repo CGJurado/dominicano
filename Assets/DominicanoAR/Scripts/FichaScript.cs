@@ -13,27 +13,52 @@ public class FichaScript : MonoBehaviour
     private GameObject lastObject;
     private Vector3 velocity;
     private float smoothTime = 0.25f;
-    private Vector3 targetPos;
+    private GameObject targetObject;
+    private PlayFichaScript playSlots;
 
     private void Start()
     {
-        targetPos = this.transform.position;
+        targetObject = this.gameObject;
+        lastObject = this.gameObject;
         string[] strValues = this.gameObject.name.Split(' ')[1].Split('x');
         values[0] = Int32.Parse(strValues[0]);
         values[1] = Int32.Parse(strValues[1]);
+        playSlots = FindObjectOfType<PlayFichaScript>();
     }
 
     public void Init()
     {
-        targetPos = this.transform.position;
+        targetObject = this.gameObject;
+        lastObject = this.gameObject;
     }
 
     private void Update()
     {
-        if (this.transform.position != targetPos)
-            this.transform.position = Vector3.SmoothDamp(this.transform.position, targetPos, ref velocity, smoothTime);
+        if (this.transform.position != targetObject.transform.position)
+            this.transform.position = Vector3.SmoothDamp(this.transform.position, targetObject.transform.position, ref velocity, smoothTime);
         else
+        {
             doneAnimation = true;
+            if(lastObject != targetObject)
+                CheckSlot();
+        }
+    }
+
+    public bool canBePlayed(){
+        if(playSlots.enterSlot.activeInHierarchy){
+            return true;
+        }
+        int[] values = playSlots.playValues;
+        int[] northRes = this.CompareFichaValues(values[1]);
+        if (northRes[0] == 1 || northRes[1] == 1){
+            return true;
+        }
+        int[] southRes = this.CompareFichaValues(values[0]);
+        if (southRes[0] == 1 || southRes[1] == 1){
+            return true;
+        }
+
+        return false;
     }
 
     public int[] CompareFichaValues(int otherFichaValue)
@@ -50,22 +75,26 @@ public class FichaScript : MonoBehaviour
 
     public void MoveTo(GameObject obj)
     {
+        lastObject = targetObject;
+        
         doneAnimation = false;
         velocity = Vector3.zero;
         if(obj.name != "PlaySlot")
             this.transform.rotation = obj.transform.rotation;
 
-        targetPos = obj.transform.position;
+        targetObject = obj;
 
-        lastObject = obj;
     }
 
     public void goBack()
     {
         doneAnimation = false;
         velocity = Vector3.zero;
-        this.transform.rotation = lastObject.transform.rotation;
-        targetPos = lastObject.transform.position;
+        if(lastObject)
+            this.transform.rotation = lastObject.transform.rotation;
+        else
+            print("lastObject doesn't exist!");
+        targetObject = lastObject;
     }
 
 
@@ -91,17 +120,24 @@ public class FichaScript : MonoBehaviour
             {
                 bool played = foundSlot.transform.parent.GetComponent<PlayFichaScript>().TryPlayFicha(this.transform.gameObject);
                 if (played)
+                {
                     this.removeCollition();
+                    lastObject = targetObject;
+                }
                 else
                     goBack();
+                
+                print(this.transform.name);
+                print(this.played);
             }
             else
             {
                 //TODO: Swap fichas
                 MoveTo(foundSlot);
+                lastObject = targetObject;
             }
         }
-        else
+        else if(!played)
         {
             goBack();
         }

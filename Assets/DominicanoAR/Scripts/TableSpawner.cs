@@ -57,7 +57,7 @@ public class TableSpawner : MonoBehaviour
 
             showIndicator = true;
 
-            //shoot a raycast from the center of the screen
+            //shoot a raycast from the hand position on the screen
             List<ARRaycastHit> hits = new List<ARRaycastHit>();
             rayManager.Raycast(new Vector2(currentPointPosition.x, currentPointPosition.y), hits, TrackableType.Planes);
 

@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class rotateScript : MonoBehaviour
 {
-    public GameObject gear;
     void Update()
     {
-        gear.transform.Rotate(0, 0 , 1);
+        this.transform.Rotate(0, 1, 0);
     }
 }

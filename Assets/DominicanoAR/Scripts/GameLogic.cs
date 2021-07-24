@@ -209,12 +209,14 @@ public class GameLogic : MonoBehaviour
         players[2].removeFichas();
         players[3].removeFichas();
 
+
         // re-Activate fichas collition for grabbing after game reset
         foreach (FichaScript ficha in fichas)
         {
             ficha.ActiveCollition();
+            ficha.Init();
         }
-
+        
         // Shuffle fichas and re-activate its collision
         for (int i = fichas.Length - 1; i > 0; i--)
         {

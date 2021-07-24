@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlaySlotsController : MonoBehaviour
 {
     public int value;
+    public bool gotClicked = false;
     private CanvasManager canvas;
     private GameObject nextPlaySlot;
     private GameObject tempPlaySlot;
@@ -52,7 +53,7 @@ public class PlaySlotsController : MonoBehaviour
                 if (ficha.doble)
                     nextPlaySlot.transform.Rotate(0f, 0f, 90f);
 
-                //When ficha value equals north or south slot value, send the oposite ficha position
+                //When ficha value equals north or south slot value, send the oposite value position
                 if (comparisonResult[1] == 1)
                     parent.UpdatePlaySlot(nextPlaySlot, this.name, 0);
                 else
@@ -77,5 +78,26 @@ public class PlaySlotsController : MonoBehaviour
         nextPlaySlot.transform.rotation = tempRotation;
 
         canvas.CloseMessagePanel();
+    }
+
+    private void OnMouseOver() 
+    {
+        nextPlaySlot.GetComponent<MeshRenderer>().enabled = true;
+    }
+    private void OnMouseExit() {
+        nextPlaySlot.GetComponent<MeshRenderer>().enabled = false;
+    }
+
+    private void OnMouseUpAsButton() {
+        this.gotClicked = true;
+    }
+
+    public void render()
+    {
+        this.gameObject.GetComponent<MeshRenderer>().enabled = true;
+    }
+    public void unRender()
+    {
+        this.gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 }
