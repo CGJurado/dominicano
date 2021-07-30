@@ -17,7 +17,7 @@ public class PlaySlotsController : MonoBehaviour
         canvas = FindObjectOfType<CanvasManager>();
     }
 
-    public void AddPlaySlot(GameObject playSlot)
+    public void savePlaySlot(GameObject playSlot)
     {
         nextPlaySlot = playSlot;
         tempPlaySlot = playSlot;

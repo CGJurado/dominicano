@@ -428,6 +428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  gotClicked: 0
 --- !u!65 &63068015
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1244,6 +1245,9 @@ MonoBehaviour:
   southAISlot: {fileID: 24852810}
   myTurn: 0
   done: 0
+  northController: {fileID: 1661427058}
+  enterController: {fileID: 57241493}
+  southController: {fileID: 1252740133}
   AIPlayer: 0
 --- !u!1001 &279043163
 PrefabInstance:
@@ -4928,6 +4932,9 @@ MonoBehaviour:
   southAISlot: {fileID: 24852810}
   myTurn: 0
   done: 0
+  northController: {fileID: 1661427058}
+  enterController: {fileID: 57241493}
+  southController: {fileID: 1252740133}
   AIPlayer: 1
 --- !u!1 &1178928096
 GameObject:
@@ -5292,6 +5299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  gotClicked: 0
 --- !u!222 &1276371920
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6067,6 +6075,9 @@ MonoBehaviour:
   southAISlot: {fileID: 24852810}
   myTurn: 0
   done: 0
+  northController: {fileID: 1661427058}
+  enterController: {fileID: 57241493}
+  southController: {fileID: 1252740133}
   AIPlayer: 1
 --- !u!65 &1562069059
 BoxCollider:
@@ -6679,6 +6690,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  gotClicked: 0
 --- !u!33 &1661559537
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -7016,6 +7028,9 @@ MonoBehaviour:
   southAISlot: {fileID: 24852810}
   myTurn: 0
   done: 0
+  northController: {fileID: 1661427058}
+  enterController: {fileID: 57241493}
+  southController: {fileID: 1252740133}
   AIPlayer: 1
 --- !u!4 &1691899600 stripped
 Transform:

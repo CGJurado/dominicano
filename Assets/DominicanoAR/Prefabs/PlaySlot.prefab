@@ -108,3 +108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e54fed81ec1b8384abbf057ee0e6ad42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playSlotPrefab: {fileID: 1406572599019856009}
+  doble: 0
+  corner: 0

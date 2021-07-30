@@ -16,8 +16,11 @@ public class PlayFichaScript : MonoBehaviour
     private GameLogic game;
     private string playSlotName;
     private int fichaPosition;
-    private float moveDistance = 0.036f;
     public int[] playValues;
+    private int southSlotCount = 0;
+    private int northSlotCount = 0;
+    private int verticalLimit = 4;
+    private int horizontalLimit = 8;
 
     private void Start()
     {
@@ -48,7 +51,7 @@ public class PlayFichaScript : MonoBehaviour
         southSlot.SetActive(false);
 
         GameObject enterPlaySlot = Instantiate(playSlotPrefab, this.transform);
-        enterSlot.GetComponent<PlaySlotsController>().AddPlaySlot(enterPlaySlot);
+        enterSlot.GetComponent<PlaySlotsController>().savePlaySlot(enterPlaySlot);
 
         //Initialize playSlot for the first time to the center of the table
         playSlot = enterPlaySlot;
@@ -74,26 +77,29 @@ public class PlayFichaScript : MonoBehaviour
         {
             //ficha.transform.position = playSlot.transform.position;
             ficha.transform.rotation = playSlot.transform.rotation;
-            this.AddPlaySlot(fichaComponent);
+
+            // This func also MOVES the FICHA
+            // Before Adding the new playslot, this func is going to move the FICHA to the actual slot
+            this.addPlaySlot(fichaComponent);
 
             return true;
         }
 
-
     }
 
-    private void AddPlaySlot(FichaScript fichaComponent)
+    private void addPlaySlot(FichaScript fichaComponent)
     {
         if (playSlotName == "NorthSlot")
         {
             if (fichaComponent.doble)
             {
-                moveDistance = 0.036f;
-                playSlot.transform.position = new Vector3(playSlot.transform.position.x,
-                    playSlot.transform.position.y, playSlot.transform.position.z - 0.017f);
+                playSlot.GetComponent<PlaySlot>().doble = true;
+                if(playSlot.transform.parent.GetComponent<PlaySlot>().corner){
+                    northSlotCount--;
+                    playSlot.GetComponent<PlaySlot>().corner = true;
+                }
+                playSlot.GetComponent<PlaySlot>().fixNorthDoblePosition();
             }
-            else
-                moveDistance = 0.05f;
 
             fichaComponent.MoveTo(playSlot);
             if (fichaPosition == 0)
@@ -106,12 +112,13 @@ public class PlayFichaScript : MonoBehaviour
         {
             if (fichaComponent.doble)
             {
-                moveDistance = 0.036f;
-                playSlot.transform.position = new Vector3(playSlot.transform.position.x,
-                    playSlot.transform.position.y, playSlot.transform.position.z + 0.017f);
+                playSlot.GetComponent<PlaySlot>().doble = true;
+                if(playSlot.transform.parent.GetComponent<PlaySlot>().corner){
+                    southSlotCount--;
+                    playSlot.GetComponent<PlaySlot>().corner = true;
+                }
+                playSlot.GetComponent<PlaySlot>().fixSouthDoblePosition();
             }
-            else
-                moveDistance = 0.05f;
 
             fichaComponent.MoveTo(playSlot);
             if (fichaPosition == 1)
@@ -124,10 +131,8 @@ public class PlayFichaScript : MonoBehaviour
         {
             if (fichaComponent.doble)
             {
-                moveDistance = 0.036f;
+                playSlot.GetComponent<PlaySlot>().doble = true;
             }
-            else
-                moveDistance = 0.05f;
 
             fichaComponent.MoveTo(playSlot);
 
@@ -146,25 +151,29 @@ public class PlayFichaScript : MonoBehaviour
         //northSlot.GetComponent<MeshRenderer>().enabled = false;
         playSlot.GetComponent<MeshRenderer>().enabled = false;
 
+        northSlotCount++;
         GameObject northPlaySlot = Instantiate(playSlotPrefab, this.transform);
-        northPlaySlot.transform.position = new Vector3(playSlot.transform.position.x,
-            playSlot.transform.position.y, playSlot.transform.position.z + moveDistance);
+        // northPlaySlot.transform.parent = playSlot.transform;
+        northPlaySlot.GetComponent<PlaySlot>().moveNorthSlot(playSlot.GetComponent<PlaySlot>());
+        if(northSlotCount == verticalLimit || northSlotCount == horizontalLimit){
+            northPlaySlot.GetComponent<PlaySlot>().corner = true;
+        }
 
-        //FindObjectOfType<CanvasManager>().OpenMessagePanel("NorthX: " + northPlaySlot.transform.position.x);
-
-        northSlot.GetComponent<PlaySlotsController>().AddPlaySlot(northPlaySlot);
+        northSlot.GetComponent<PlaySlotsController>().savePlaySlot(northPlaySlot);
     }
     private void AddSouthPlaySlot()
     {
         //southSlot.GetComponent<MeshRenderer>().enabled = false;
         playSlot.GetComponent<MeshRenderer>().enabled = false;
 
+        southSlotCount++;
         GameObject southPlaySlot = Instantiate(playSlotPrefab, this.transform);
-        southPlaySlot.transform.position = new Vector3(playSlot.transform.position.x,
-            playSlot.transform.position.y, playSlot.transform.position.z - moveDistance);
 
-        //FindObjectOfType<CanvasManager>().OpenMessagePanel("SouthX: " + southSlot.transform.position.x);
+        southPlaySlot.GetComponent<PlaySlot>().moveSouthSlot(playSlot.GetComponent<PlaySlot>());
+        if(southSlotCount == verticalLimit || southSlotCount == horizontalLimit){
+            southPlaySlot.GetComponent<PlaySlot>().corner = true;
+        }
 
-        southSlot.GetComponent<PlaySlotsController>().AddPlaySlot(southPlaySlot);
+        southSlot.GetComponent<PlaySlotsController>().savePlaySlot(southPlaySlot);
     }
 }

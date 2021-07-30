@@ -119,8 +119,12 @@ public class GameLogic : MonoBehaviour
 
         if(checkGameBlockade())
         {
+            int blockedPlayerNumber = playerTurn +1;
+            if (blockedPlayerNumber > 3)
+                blockedPlayerNumber = 0;
+
             List<FichaScript> blockerFichas = playing().fichasLeft();
-            List<FichaScript> blockedFichas = players[playerTurn+1].fichasLeft();
+            List<FichaScript> blockedFichas = players[blockedPlayerNumber].fichasLeft();
 
             int blockerCounter = 0;
             int blockedCounter = 0;
