@@ -17,10 +17,10 @@ public class PlayFichaScript : MonoBehaviour
     private string playSlotName;
     private int fichaPosition;
     public int[] playValues;
-    private int southSlotCount = 0;
-    private int northSlotCount = 0;
-    private int verticalLimit = 4;
-    private int horizontalLimit = 8;
+    public int southSlotCount = 0;
+    public int northSlotCount = 0;
+    private int verticalLimit = 7;
+    private int horizontalLimit = 11;
 
     private void Start()
     {
@@ -142,8 +142,8 @@ public class PlayFichaScript : MonoBehaviour
         }
 
         // If player is not AI then his turn is done
-        if (!game.playing().AIPlayer)
-            game.playing().done = true;
+        if (!GameLogic.playing().AIPlayer)
+            GameLogic.playing().done = true;
     }
 
     private void AddNorthPlaySlot()

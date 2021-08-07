@@ -38,6 +38,7 @@
   <ItemGroup>
      <Compile Include="Assets\Editor\ManoMotionSetup.cs" />
      <Compile Include="Assets\Editor\EditorScripts.cs" />
+     <Compile Include="Assets\JSONObject\Editor\JSONChecker.cs" />
     <Reference Include="UnityEngine">
         <HintPath>R:/software/2020.3.0f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -272,8 +273,8 @@
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
         <HintPath>R:/software/2020.3.0f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-        <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/16.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
+    <Reference Include="NugetForUnity">
+        <HintPath>R:/pro/MMDominicano/Assets/NuGet/Editor/NugetForUnity.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
         <HintPath>R:/pro/MMDominicano/Library/PackageCache/com.unity.ext.nunit@1.0.6/net35/unity-custom/nunit.framework.dll</HintPath>

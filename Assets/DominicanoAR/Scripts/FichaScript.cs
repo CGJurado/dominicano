@@ -75,6 +75,17 @@ public class FichaScript : MonoBehaviour
 
     public void MoveTo(GameObject obj)
     {
+        if(SocketManager.online && (GameLogic.mainPlayerTurn || (GameLogic.playing().AIPlayer && SocketManager.mainPlayer.number == 1 )) 
+        && obj.name != "PlaySlot(Clone) (PlaySlot)" && obj.name != "PlaySlot(Clone)"){
+            FichaMoveResponse tempFichaRes = new FichaMoveResponse();
+            tempFichaRes.objName = obj.transform.parent.name+ "/"+ obj.name;
+            tempFichaRes.playerNumber = SocketManager.mainPlayer.number;
+            tempFichaRes.fichaName = this.gameObject.name;
+            tempFichaRes.AI = GameLogic.playing().AIPlayer;
+
+            SocketManager.sendFichaToObj(tempFichaRes);
+        }
+
         lastObject = targetObject;
         
         doneAnimation = false;
@@ -127,8 +138,8 @@ public class FichaScript : MonoBehaviour
                 else
                     goBack();
                 
-                print(this.transform.name);
-                print(this.played);
+                // print(this.transform.name);
+                // print(this.played);
             }
             else
             {

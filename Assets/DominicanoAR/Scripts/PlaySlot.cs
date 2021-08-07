@@ -30,7 +30,6 @@ public class PlaySlot : MonoBehaviour
         // PlaySlot parent = this.transform.parent.GetComponent<PlaySlot>();
         this.transform.SetParent(parent.transform);
         this.transform.localScale = new Vector3(1, 1, 1);
-        print(parent);
 
         if(parent.doble){
             if(parent.corner){ //Normal slot after doble corner parent

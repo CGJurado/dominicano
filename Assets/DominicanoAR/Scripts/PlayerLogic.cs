@@ -11,14 +11,34 @@ public class PlayerLogic : MonoBehaviour
     public GameObject southAISlot;
     public bool myTurn = false;
     public bool done = false;
+    public bool passed = false;
     public PlaySlotsController northController;
     public PlaySlotsController enterController;
     public PlaySlotsController southController;
     private PlayFichaScript playSlots;
     private FichaScript foundFicha;
+    public PlayerBody body;
+    public string team = "team1";
     public bool AIPlayer;
     private bool fichaGotClicked = false;
 
+    private void Start() {
+        if(number == 2 || number == 4)
+            team = "team2";
+    }
+    // Future scalable function if we ever use NetworkManager in the future
+    // private void Init() 
+    // {
+    //     GameLogic game = FindObjectOfType<GameLogic>();
+    //     this.transform.SetParent(game.transform);
+
+    //     northController = game.playSlots.northSlot.GetComponent<PlaySlotsController>();
+    //     enterController = game.playSlots.enterSlot.GetComponent<PlaySlotsController>();
+    //     southController = game.playSlots.southSlot.GetComponent<PlaySlotsController>();
+
+    //     northAISlot = FindObjectOfType<NorthAISlot>().gameObject;
+    //     southAISlot = FindObjectOfType<SouthAISlot>().gameObject;
+    // }
 
     private void Update()
     {
@@ -45,7 +65,7 @@ public class PlayerLogic : MonoBehaviour
                 enterController.gotClicked = false;
             }
 
-            if(Input.GetMouseButtonDown(0))
+            if(Input.GetMouseButtonDown(0) && GameLogic.mainPlayerTurn)
             {
                 Camera[] allCameras = new Camera[2];
                 Camera.GetAllCameras(allCameras);
@@ -57,14 +77,14 @@ public class PlayerLogic : MonoBehaviour
 
             }
             
-            // TODO: switch camera to player can select where to play from above
+            // TODO: switch camera so player can select where to play from above
             // if(Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
             // {
             //     Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
             //     clickPlay(ray);
             // }
 
-            if(fichaGotClicked)
+            if(fichaGotClicked && GameLogic.mainPlayerTurn)
             {
                 if(northController.gotClicked){
                     foundFicha.MoveTo(northAISlot);
@@ -104,7 +124,7 @@ public class PlayerLogic : MonoBehaviour
                     enterController.render();
                     southController.render();
 
-                    Handheld.Vibrate();
+                    // Handheld.Vibrate();
                 }
                 else{
                     foundFicha = null;
@@ -128,6 +148,9 @@ public class PlayerLogic : MonoBehaviour
 
     public void Play()
     {
+        if(SocketManager.online && !(SocketManager.mainPlayer.number == 1))
+            return;
+            
         if (!foundFicha)
         {
             checkFichas();
@@ -139,6 +162,10 @@ public class PlayerLogic : MonoBehaviour
             //     foundFicha.CheckSlot();
             // else if (foundFicha.played)
                 done = true;
+                // CanvasManager tempCanv = FindObjectOfType<CanvasManager>();
+                // tempCanv.OpenMessagePanel("AIFound: Pass");
+                // tempCanv.onlinePass();
+                // this.transform.parent.GetComponent<GameLogic>().passTurn();
 
 
         }
@@ -176,10 +203,30 @@ public class PlayerLogic : MonoBehaviour
 
         if (!foundFicha)
         {
-            FindObjectOfType<CanvasManager>().OpenMessagePanel("AIFound: Pass");
-            done = true;
+            CanvasManager tempCanv = FindObjectOfType<CanvasManager>();
+            tempCanv.OpenMessagePanel("AIFound: Pass");
+            tempCanv.onlinePass();
+            this.transform.parent.GetComponent<GameLogic>().passTurn();
+            // done = true;
         }
         
+    }
+
+    public int beforeMe(){
+        int arrPos = number - 1;
+
+        if(arrPos == 0)
+            return 3;
+        
+        return (arrPos - 1);
+    }
+    public int afterMe(){
+        int arrPos = number - 1;
+
+        if(arrPos == 3)
+            return 0;
+        
+        return (arrPos + 1);
     }
 
     public List<FichaScript> fichasLeft(){

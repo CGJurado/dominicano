@@ -71,7 +71,7 @@ public class GrabScript : MonoBehaviour
                     new Vector3(hits[0].pose.position.x, hits[0].pose.position.y + 1, hits[0].pose.position.z),
                         hits[0].pose.rotation);
 
-                Handheld.Vibrate();
+                // Handheld.Vibrate();
             }
         }
 
@@ -105,7 +105,7 @@ public class GrabScript : MonoBehaviour
                     foundItem = hit.collider.gameObject;
                     foundItem.transform.position = currentPOIWorldPosition;
 
-                    Handheld.Vibrate();
+                    // Handheld.Vibrate();
                 }
             }
             else
@@ -149,7 +149,7 @@ public class GrabScript : MonoBehaviour
                 {
                     foundItem = hit.collider.gameObject;
                     //foundItem.transform.position = currentHandWorldPosition;
-                    Handheld.Vibrate();
+                    // Handheld.Vibrate();
                 }
             }
             else

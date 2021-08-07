@@ -18,13 +18,16 @@ public class GameLogic : MonoBehaviour
     private PlayerLogic[] players;
     private int team1Points;
     private int team2Points;
-    private int playerTurn = 0;
+    private static int playerTurn = 0;
+    private int mainPlayerNumber = 0;
+    private int passCounter = 0;
+    public static bool mainPlayerTurn {get; private set;} = true;
     public PlayFichaScript playSlots;
     public bool start;
 
-    // Start is called before the first frame update
     void Start()
     {
+        
         team1Points = 0;
         team2Points = 0;
         canvas = FindObjectOfType<CanvasManager>();
@@ -39,6 +42,10 @@ public class GameLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if(Input.GetKeyDown(KeyCode.Space))
+        // {
+        // }
+
         if (start)
         {
             if(playing().myTurn == false)
@@ -49,20 +56,29 @@ public class GameLogic : MonoBehaviour
                 }
                 else
                 {
+                    print("new turn!!!!");
+
                     playerTurn++;
                     if (playerTurn > 3)
                         playerTurn = 0;
 
                     players[playerTurn].myTurn = true;
+                    players[playerTurn].passed = false;
 
                     canvas.OpenMessagePanel("Player " + (playerTurn + 1) + " turn");
 
-                    canvas.togglePassBtn(true);
-                    if (players[playerTurn].AIPlayer)
-                    {
+                    if(mainPlayerNumber != playerTurn){
                         canvas.togglePassBtn(false);
-                        StartCoroutine(ExecuteAfterTime(1f));
+                        canvas.showPlayBtn(false);
+                        mainPlayerTurn = false;
+                    } else{
+                        canvas.togglePassBtn(true);
+                        canvas.showPlayBtn(mainPlayerNumber == 0);
+                        mainPlayerTurn = true;
                     }
+
+                    if (players[playerTurn].AIPlayer)
+                        StartCoroutine(ExecuteAfterTime(1f));
                 }
                 
             }
@@ -71,18 +87,40 @@ public class GameLogic : MonoBehaviour
 
     public void startGame()
     {
-        canvas.OpenMessagePanel("Player " + (playerTurn+1) + " turn");
-        this.RepartirFichas();
+        this.resetTable();
+
+        if (SocketManager.online && mainPlayerNumber == 0){
+            canvas.sm.resetGame();
+            Invoke("RepartirFichas",2);
+        }else if(!SocketManager.online)
+            this.RepartirFichas();
+
         playerTurn = 0;
         players[playerTurn].myTurn = true;
         start = true;
-        canvas.togglePassBtn(true);
+        canvas.OpenMessagePanel("Player " + (playerTurn+1) + " turn");
+
+        if(mainPlayerNumber == playerTurn){
+            canvas.togglePassBtn(true);
+            mainPlayerTurn = true;
+        } else{
+            mainPlayerTurn = false;
+        }
     }
 
     public void endGame()
     {
+        if (SocketManager.online && mainPlayerNumber == 0)
+            canvas.sm.endGame(team1Points, team2Points);
+            
         this.start = false;
         canvas.OpenMessagePanel("Game Ended!");
+        canvas.showPlayBtn(mainPlayerNumber == 0);
+    }
+
+    public void addPoints(Points points){
+        team1Points = points.team1Points;
+        team2Points = points.team2Points;
     }
 
     private void addPointsToTeam(ref int winnerTeamPoints)
@@ -103,19 +141,74 @@ public class GameLogic : MonoBehaviour
     }
 
     public void passTurn(){
-        playing().myTurn = false;
+        playing().passed = true;
+        playing().done = true;
+        passCounter++;
+        if(!players[playing().beforeMe()].passed)
+            passCounter = 1;
     }
 
-    public PlayerLogic playing()
+    public static PlayerLogic playing()
     {
-        return players[playerTurn];
+        return GameObject.FindObjectOfType<GameLogic>().players[playerTurn];
+    }
+
+    public void onlineGame(Player player){
+        mainPlayerNumber = player.number - 1;
+        players[0].AIPlayer = true;
+        int camRotation = 90 * (player.number - 1);
+        FindObjectOfType<TableSpawner>().transform.Rotate(0,camRotation,0,Space.Self);
+
+        print("CamRotation: "+ camRotation);
+        print("player.number: "+ player.number);
+        addOnlinePlayer(player);
+    }
+
+    public void addOnlinePlayer(Player player){
+        players[player.number-1].AIPlayer = false;
+        players[player.number-1].body.showBody(true);
+        players[player.number-1].body.setName(player.username);
+
+        canvas.showPlayBtn(mainPlayerNumber == 0); //Only host can shuffle aka repartir
+        mainPlayerTurn = mainPlayerNumber == playerTurn;
+    }
+
+    public void removeOnlinePlayer(Player player){
+        players[player.number-1].AIPlayer = true;
+        players[player.number-1].body.showBody(false);
+        players[player.number-1].body.setName("AI");
+
+        if(player.number-1 == playerTurn)
+            players[playerTurn].Play();
+
+    }
+
+    public FichaScript findFichaByName(string fichaName){
+        for (int i = 0; i < fichas.Length; i++)
+        {
+            if(fichas[i].gameObject.name == fichaName){
+                return fichas[i];
+            }
+        }
+        return new FichaScript();
     }
 
     private bool checkGameEnded()
     {
-        ref int points = ref team2Points;
-        if(playing().number == 1 || playing().number == 3)
-            points = ref team1Points;
+        if(SocketManager.online && !(SocketManager.mainPlayer.number == 1))
+            return false;
+
+        if(passCounter == 3){
+            if(players[playing().afterMe()].team == "team1")
+                team1Points += 25;
+            else
+                team2Points += 25;
+            
+            canvas.team1Score.text = team1Points.ToString();
+            canvas.team1Score.text = team2Points.ToString();
+
+            passCounter = 0;
+        }
 
         if(checkGameBlockade())
         {
@@ -149,7 +242,11 @@ public class GameLogic : MonoBehaviour
         }
         else if(!checkPlayerHasFichas()){
 
-            addPointsToTeam(ref points);
+            if(playing().number == 1 || playing().number == 3)
+                addPointsToTeam(ref team2Points);
+            else
+                addPointsToTeam(ref team1Points);
+
             return true;
         }
         return false;
@@ -206,8 +303,11 @@ public class GameLogic : MonoBehaviour
         players[playerTurn].Play();
     }
 
-    private void RepartirFichas()
+    private void resetTable()
     {
+        playSlots.northSlotCount = 0;
+        playSlots.southSlotCount = 0;
+
         players[0].removeFichas();
         players[1].removeFichas();
         players[2].removeFichas();
@@ -220,6 +320,16 @@ public class GameLogic : MonoBehaviour
             ficha.ActiveCollition();
             ficha.Init();
         }
+
+        // Remove all played slots that were being used on the prev game
+        PlaySlot[] allPlayslots = FindObjectsOfType<PlaySlot>();
+        foreach (PlaySlot slot in allPlayslots)
+        {
+            Destroy(slot.gameObject);
+        }
+        playSlots.ActivateEnterSlot();
+    }
+    private void RepartirFichas(){
         
         // Shuffle fichas and re-activate its collision
         for (int i = fichas.Length - 1; i > 0; i--)
@@ -261,14 +371,6 @@ public class GameLogic : MonoBehaviour
 
         }
 
-        // Remove all played slots that were been used on the prev game
-        PlaySlot[] allPlayslots = FindObjectsOfType<PlaySlot>();
-        foreach (PlaySlot slot in allPlayslots)
-        {
-            Destroy(slot.gameObject);
-        }
-
-        playSlots.ActivateEnterSlot();
     }
 
     private void ShowGame()
