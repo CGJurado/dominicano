@@ -9,7 +9,7 @@ public class PlayerLogic : MonoBehaviour
     private List<FichaScript> fichas = new List<FichaScript>();
     public GameObject northAISlot;
     public GameObject southAISlot;
-    public bool myTurn = false;
+    public bool turn = false;
     public bool done = false;
     public bool passed = false;
     public PlaySlotsController northController;
@@ -42,10 +42,12 @@ public class PlayerLogic : MonoBehaviour
 
     private void Update()
     {
-        if (myTurn)
+        if (turn)
         {
-            if (AIPlayer)
+            if (AIPlayer || SocketManager.online)
             {
+                this.transform.LookAt(Camera.main.transform);
+                
                 if (foundFicha)
                     this.Play();
 
@@ -53,7 +55,7 @@ public class PlayerLogic : MonoBehaviour
 
             if (done)
             {
-                myTurn = false;
+                turn = false;
                 done = false;
                 fichaGotClicked = false;
                 foundFicha = null;
@@ -65,7 +67,7 @@ public class PlayerLogic : MonoBehaviour
                 enterController.gotClicked = false;
             }
 
-            if(Input.GetMouseButtonDown(0) && GameLogic.mainPlayerTurn)
+            if(Input.GetMouseButtonDown(0) && GameLogic.myTurn)
             {
                 Camera[] allCameras = new Camera[2];
                 Camera.GetAllCameras(allCameras);
@@ -84,7 +86,7 @@ public class PlayerLogic : MonoBehaviour
             //     clickPlay(ray);
             // }
 
-            if(fichaGotClicked && GameLogic.mainPlayerTurn)
+            if(fichaGotClicked && GameLogic.myTurn)
             {
                 if(northController.gotClicked){
                     foundFicha.MoveTo(northAISlot);
@@ -141,18 +143,19 @@ public class PlayerLogic : MonoBehaviour
 
     public void removeFichas()
     {
-        myTurn = false;
+        turn = false;
         fichas = new List<FichaScript>();
     }
 
 
     public void Play()
     {
-        if(SocketManager.online && !(SocketManager.mainPlayer.number == 1))
-            return;
             
         if (!foundFicha)
         {
+            if(SocketManager.online && !(SocketManager.mainPlayer.number == 1))
+                return;
+
             checkFichas();
         }
         else if (foundFicha.doneAnimation && foundFicha.played)
@@ -161,15 +164,15 @@ public class PlayerLogic : MonoBehaviour
             // if (foundFicha.transform.position == northAISlot.transform.position || foundFicha.transform.position == southAISlot.transform.position)
             //     foundFicha.CheckSlot();
             // else if (foundFicha.played)
-                done = true;
-                // CanvasManager tempCanv = FindObjectOfType<CanvasManager>();
-                // tempCanv.OpenMessagePanel("AIFound: Pass");
-                // tempCanv.onlinePass();
-                // this.transform.parent.GetComponent<GameLogic>().passTurn();
+            done = true;
 
 
         }
         // FindObjectOfType<CanvasManager>().OpenMessagePanel("P" + number + " PlayF: " + foundFicha.values[0] + " : " + foundFicha.values[1]);
+    }
+
+    public void recieveFicha(FichaScript ficha){
+        foundFicha = ficha;
     }
 
     private void checkFichas()

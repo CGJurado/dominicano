@@ -21,7 +21,7 @@ public class GameLogic : MonoBehaviour
     private static int playerTurn = 0;
     private int mainPlayerNumber = 0;
     private int passCounter = 0;
-    public static bool mainPlayerTurn {get; private set;} = true;
+    public static bool myTurn {get; private set;} = true;
     public PlayFichaScript playSlots;
     public bool start;
 
@@ -48,7 +48,7 @@ public class GameLogic : MonoBehaviour
 
         if (start)
         {
-            if(playing().myTurn == false)
+            if(playing().turn == false)
             {
                 if(checkGameEnded())
                 {
@@ -62,7 +62,7 @@ public class GameLogic : MonoBehaviour
                     if (playerTurn > 3)
                         playerTurn = 0;
 
-                    players[playerTurn].myTurn = true;
+                    players[playerTurn].turn = true;
                     players[playerTurn].passed = false;
 
                     canvas.OpenMessagePanel("Player " + (playerTurn + 1) + " turn");
@@ -70,11 +70,11 @@ public class GameLogic : MonoBehaviour
                     if(mainPlayerNumber != playerTurn){
                         canvas.togglePassBtn(false);
                         canvas.showPlayBtn(false);
-                        mainPlayerTurn = false;
+                        myTurn = false;
                     } else{
                         canvas.togglePassBtn(true);
                         canvas.showPlayBtn(mainPlayerNumber == 0);
-                        mainPlayerTurn = true;
+                        myTurn = true;
                     }
 
                     if (players[playerTurn].AIPlayer)
@@ -96,15 +96,15 @@ public class GameLogic : MonoBehaviour
             this.RepartirFichas();
 
         playerTurn = 0;
-        players[playerTurn].myTurn = true;
+        players[playerTurn].turn = true;
         start = true;
         canvas.OpenMessagePanel("Player " + (playerTurn+1) + " turn");
 
         if(mainPlayerNumber == playerTurn){
             canvas.togglePassBtn(true);
-            mainPlayerTurn = true;
+            myTurn = true;
         } else{
-            mainPlayerTurn = false;
+            myTurn = false;
         }
     }
 
@@ -136,7 +136,7 @@ public class GameLogic : MonoBehaviour
 
         winnerTeamPoints += points;
         canvas.team1Score.text = team1Points.ToString();
-        canvas.team1Score.text = team2Points.ToString();
+        canvas.team2Score.text = team2Points.ToString();
 
     }
 
@@ -161,16 +161,23 @@ public class GameLogic : MonoBehaviour
 
         print("CamRotation: "+ camRotation);
         print("player.number: "+ player.number);
-        addOnlinePlayer(player);
+
+        players[player.number-1].AIPlayer = false;
+        if (!(Application.platform == RuntimePlatform.Android))
+        {
+            players[player.number-1].body.showBody(true);
+            players[player.number-1].body.setName(player.username);
+        }
+        canvas.showPlayBtn(mainPlayerNumber == 0); //Only host can shuffle aka repartir
+        myTurn = mainPlayerNumber == playerTurn;
     }
 
     public void addOnlinePlayer(Player player){
         players[player.number-1].AIPlayer = false;
         players[player.number-1].body.showBody(true);
         players[player.number-1].body.setName(player.username);
-
         canvas.showPlayBtn(mainPlayerNumber == 0); //Only host can shuffle aka repartir
-        mainPlayerTurn = mainPlayerNumber == playerTurn;
+        myTurn = mainPlayerNumber == playerTurn;
     }
 
     public void removeOnlinePlayer(Player player){
@@ -205,7 +212,7 @@ public class GameLogic : MonoBehaviour
                 team2Points += 25;
             
             canvas.team1Score.text = team1Points.ToString();
-            canvas.team1Score.text = team2Points.ToString();
+            canvas.team2Score.text = team2Points.ToString();
 
             passCounter = 0;
         }
@@ -243,9 +250,9 @@ public class GameLogic : MonoBehaviour
         else if(!checkPlayerHasFichas()){
 
             if(playing().number == 1 || playing().number == 3)
-                addPointsToTeam(ref team2Points);
-            else
                 addPointsToTeam(ref team1Points);
+            else
+                addPointsToTeam(ref team2Points);
 
             return true;
         }

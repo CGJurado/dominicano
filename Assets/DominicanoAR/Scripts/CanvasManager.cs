@@ -14,6 +14,10 @@ public class CanvasManager : MonoBehaviour
     public GameObject passBtn;
     public GameObject playBtn;
     public GameObject menuPanel;
+    public GameObject nameInputField;
+    public GameObject roomInputField;
+    public GameObject joinForm;
+    public GameObject leaveForm;
     public GameObject SocketObject;
     public SocketManager sm;
 
@@ -68,12 +72,22 @@ public class CanvasManager : MonoBehaviour
         }
     }
 
-    public void Host(){
-        sm.StartHost();
-        menuPanel.SetActive(false);
+    public void leaveMatch(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public void Join(){
-        sm.StartClient();
+        Player tempPlayer = new Player();
+        tempPlayer.username = nameInputField.GetComponent<Text>().text;
+        tempPlayer.roomName = roomInputField.GetComponent<Text>().text;
+
+        if(tempPlayer.username == "")
+            tempPlayer.username = Application.platform.ToString();
+        if(tempPlayer.roomName == "")
+            tempPlayer.roomName = "room2";
+            
+        sm.StartClient(tempPlayer);
+        joinForm.SetActive(false);
+        leaveForm.SetActive(true);
         menuPanel.SetActive(false);
     }
 

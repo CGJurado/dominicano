@@ -75,7 +75,10 @@ public class FichaScript : MonoBehaviour
 
     public void MoveTo(GameObject obj)
     {
-        if(SocketManager.online && (GameLogic.mainPlayerTurn || (GameLogic.playing().AIPlayer && SocketManager.mainPlayer.number == 1 )) 
+        lastObject = targetObject;
+        doneAnimation = false;
+        
+        if(SocketManager.online && (GameLogic.myTurn || (GameLogic.playing().AIPlayer && SocketManager.mainPlayer.number == 1 )) 
         && obj.name != "PlaySlot(Clone) (PlaySlot)" && obj.name != "PlaySlot(Clone)"){
             FichaMoveResponse tempFichaRes = new FichaMoveResponse();
             tempFichaRes.objName = obj.transform.parent.name+ "/"+ obj.name;
@@ -86,9 +89,6 @@ public class FichaScript : MonoBehaviour
             SocketManager.sendFichaToObj(tempFichaRes);
         }
 
-        lastObject = targetObject;
-        
-        doneAnimation = false;
         velocity = Vector3.zero;
         if(obj.name != "PlaySlot")
             this.transform.rotation = obj.transform.rotation;
@@ -121,6 +121,21 @@ public class FichaScript : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         foundSlot = null;
+    }
+
+    public string getFoundSlotName(){
+        
+        if (foundSlot)
+        {
+            if (foundSlot.name == "NorthSlot")
+            {
+                return "AISlots/North";
+
+            } else if(foundSlot.name == "SouthSlot"  || foundSlot.name == "EnterSlot"){
+                return "AISlots/South";
+            }
+        }
+        return "notFound";
     }
 
     public void CheckSlot()

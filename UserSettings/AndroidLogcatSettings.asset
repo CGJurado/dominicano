@@ -1,0 +1,137 @@
+{
+    "m_SelectedDeviceId": "10.0.0.28:5555",
+    "m_SelectedPackage": {
+        "deviceId": "10.0.0.28:5555",
+        "name": "com.qtech.mmdominicano",
+        "processId": 12831,
+        "exited": false
+    },
+    "m_SelectedPriority": 0,
+    "m_KnownPackagesForSerialization": [
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.asus.launcher",
+            "processId": 2969,
+            "exited": false
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 16791,
+            "exited": true
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 20299,
+            "exited": true
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 21907,
+            "exited": true
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 23449,
+            "exited": true
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 25557,
+            "exited": true
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 3920,
+            "exited": false
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 5339,
+            "exited": false
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 26466,
+            "exited": false
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 30730,
+            "exited": false
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 12056,
+            "exited": false
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 12831,
+            "exited": false
+        }
+    ],
+    "m_Tags": {
+        "m_Entries": [
+            {
+                "m_Name": "Filter by all listed tags",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "No Filter",
+                "m_Selected": true
+            },
+            {
+                "m_Name": "",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "Tag Control...",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "Unity",
+                "m_Selected": false
+            },
+            {
+                "m_Name": "CRASH",
+                "m_Selected": false
+            }
+        ]
+    },
+    "m_MemoryViewerState": {
+        "MemoryWindowHeight": 300.0,
+        "MemoryWindowWidth": 170.0,
+        "MemoryTypeEnabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
+        "MemoryGroup": 2,
+        "Behavior": 0
+    },
+    "m_Filter": "",
+    "m_FilterIsRegularExpression": false,
+    "m_SymbolPaths": []
+}

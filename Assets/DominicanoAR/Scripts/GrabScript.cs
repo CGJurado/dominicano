@@ -128,12 +128,25 @@ public class GrabScript : MonoBehaviour
         // Release the "Ficha"
         else if (foundItem && currentDetectedContinuousGesture == ManoGestureContinuous.OPEN_PINCH_GESTURE)
         {
-            GameObject tempObj = new GameObject("temp");
-            tempObj.transform.position = currentPOIWorldPosition;
+
+            string tempSlotName = foundItem.GetComponent<FichaScript>().getFoundSlotName();
+            if(tempSlotName != "notFound"){
+                GameObject tempObj = GameObject.Find(tempSlotName);
+                foundItem.GetComponent<FichaScript>().MoveTo(tempObj);
+                foundItem = null;
+            } else{
+                foundItem.GetComponent<FichaScript>().goBack();
+            }
+
+            // GameObject tempObj = new GameObject("temp");
+            // tempObj.transform.position = currentPOIWorldPosition;
+            // foundItem.GetComponent<FichaScript>().MoveTo(tempObj);
+            // foundItem = null;
+
+
             //Check if 'Ficha' ended up inside an available Slot
             // foundItem.GetComponent<FichaScript>().CheckSlot();
-            foundItem.GetComponent<FichaScript>().MoveTo(tempObj);
-            foundItem = null;
+            
         }
         // ######################################## Find the Table ##############################################
         else if (currentDetectedTriggerGesture == ManoGestureTrigger.GRAB_GESTURE)

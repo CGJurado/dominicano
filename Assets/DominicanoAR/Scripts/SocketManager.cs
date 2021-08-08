@@ -89,6 +89,7 @@ public class SocketManager : SocketIOComponent
         GameObject obj = GameObject.Find(fichaMoveRes.objName);
 
         ficha.MoveTo(obj);
+        GameLogic.playing().recieveFicha(ficha);
         
 
         // if((obj.name == "North" || obj.name == "South") && fichaMoveRes.AI && mainPlayer.number != 0){
@@ -159,13 +160,12 @@ public class SocketManager : SocketIOComponent
         Emit("chat", new JSONObject(JsonUtility.ToJson(mainPlayer)));
     }
 
-    public virtual void StartClient(){
+    public virtual void StartClient(Player player){
         base.Start();
         setupEvents();
         online = true;
         
-        mainPlayer.roomName = "room2";
-        mainPlayer.username = "StandAlone";
+        mainPlayer = player;
         Invoke("joinRoom",1);
     }
 

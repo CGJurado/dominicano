@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 public class WebSocketManager : SocketManager
 {
+    #if UNITY_WEBGL
     [DllImport("__Internal")]
     private static extern void initSocket();
 
@@ -31,6 +32,34 @@ public class WebSocketManager : SocketManager
 
     [DllImport("__Internal")]
     private static extern void emitPass(string data);
+    #else
+    [DllImport("comunication.jslib")]
+    private static extern void initSocket();
+
+    [DllImport("comunication.jslib")]
+    private static extern void stopConnection();
+
+    [DllImport("comunication.jslib")]
+    private static extern void initListeners();
+
+    [DllImport("comunication.jslib")]
+    private static extern void goRoom(string data);
+
+    [DllImport("comunication.jslib")]
+    private static extern void sendMsg(string data);
+
+    [DllImport("comunication.jslib")]
+    private static extern void sendFicha(string data);
+
+    [DllImport("comunication.jslib")]
+    private static extern void restartGame(string data);
+
+    [DllImport("comunication.jslib")]
+    private static extern void finishGame(string data);
+
+    [DllImport("comunication.jslib")]
+    private static extern void emitPass(string data);
+    #endif
 
     public override void Start()
     {
@@ -76,11 +105,12 @@ public class WebSocketManager : SocketManager
         sendMsg(data);
     }
 
-    public override void StartClient(){
+    public override void StartClient(Player player){
         initSocket();
         initListeners();
         online = true;
 
+        mainPlayer = player;
         Invoke("joinRoom",1);
     }
 
@@ -92,8 +122,6 @@ public class WebSocketManager : SocketManager
     }
 
     private void joinRoom(){
-        mainPlayer.roomName = "room2";
-        mainPlayer.username = "WebGLClient";
         print("Inside webSocket StartClient");
         string data = JsonUtility.ToJson(mainPlayer);
         goRoom(data);

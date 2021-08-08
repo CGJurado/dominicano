@@ -19,8 +19,8 @@ public class PlayFichaScript : MonoBehaviour
     public int[] playValues;
     public int southSlotCount = 0;
     public int northSlotCount = 0;
-    private int verticalLimit = 7;
-    private int horizontalLimit = 11;
+    private int verticalLimit = 6;
+    private int horizontalLimit = 10;
 
     private void Start()
     {
