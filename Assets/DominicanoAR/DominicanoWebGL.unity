@@ -2146,7 +2146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ab2357e5d4ffcd40958a29067f449f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: ws://127.0.0.1:666/socket.io/?EIO=3&transport=websocket
+  url: ws://dreamstroyer.com/socket.io/?EIO=3&transport=websocket
   autoConnect: 1
   reconnectDelay: 5
   ackExpirationTime: 1800

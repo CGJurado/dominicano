@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "10.0.0.28:5555",
         "name": "com.qtech.mmdominicano",
-        "processId": 12831,
+        "processId": 27800,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -78,6 +78,12 @@
             "deviceId": "10.0.0.28:5555",
             "name": "com.qtech.mmdominicano",
             "processId": 12831,
+            "exited": false
+        },
+        {
+            "deviceId": "10.0.0.28:5555",
+            "name": "com.qtech.mmdominicano",
+            "processId": 27800,
             "exited": false
         }
     ],
