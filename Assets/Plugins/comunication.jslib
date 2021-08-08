@@ -1,7 +1,8 @@
 mergeInto(LibraryManager.library, {
 
   initSocket: function () {
-    socket = io();
+    // socket = io();
+    socket = io.connect('http://dreamstroyer.com');
 
     socket.on('connect', function() {
         console.log("connected to server");
